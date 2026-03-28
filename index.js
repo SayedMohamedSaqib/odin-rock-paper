@@ -6,8 +6,8 @@ function getComputerChoice() {
   return choices[play];
 }
 
-function getHumanChoice() {
-  return prompt("Enter your choice (rock, paper, scissor): ");
+function getHumanChoice(choice) {
+  return choice;
 }
 
 function winner(userChoice, computerChoice) {
@@ -24,20 +24,59 @@ function winner(userChoice, computerChoice) {
 
 let scores = { user: 0, computer: 0 };
 
-function playGame() {
-  const userChoice = getHumanChoice();
-  const computerChoice = getComputerChoice();
-  console.log("User:", userChoice);
-  console.log("Computer:", computerChoice);
-  const result = winner(userChoice, computerChoice);
+function playGame(userChoice) {
+  // stop game if already finished
+  if (scores.user === 5 || scores.computer === 5) return;
+
+  let computerChoice = getComputerChoice();
+
+  let userDisplay = document.querySelector("#userChoice");
+  let computerDisplay = document.querySelector("#computerChoice");
+  let userScore = document.querySelector("#userScore");
+  let computerScore = document.querySelector("#computerScore");
+  let winnerMessage = document.querySelector("#winnerMessage");
+
+  userDisplay.innerHTML = "User Choice: " + userChoice;
+  computerDisplay.innerHTML = "Computer Choice: " + computerChoice;
+
+  let result = winner(userChoice, computerChoice);
+
   if (result === "draw") {
-    console.log("It's a draw!");
+    winnerMessage.innerHTML = "It's a draw!";
   } else if (result === 1) {
-    console.log("You win!");
     scores.user++;
+    userScore.innerHTML = "User Score: " + scores.user;
+    winnerMessage.innerHTML = "You win this round!";
   } else {
-    console.log("Computer wins!");
     scores.computer++;
+    computerScore.innerHTML = "Computer Score: " + scores.computer;
+    winnerMessage.innerHTML = "Computer wins this round!";
   }
-  console.log("Score:", scores);
+
+  // Check for game winner
+  if (scores.user === 5) {
+    winnerMessage.innerHTML = "🎉 You WON the game!";
+  } else if (scores.computer === 5) {
+    winnerMessage.innerHTML = "💻 Computer WON the game!";
+  }
 }
+
+const btn = document.querySelectorAll("button");
+btn.forEach((button) => {
+  button.addEventListener("click", (event) => {
+    let target = event.target;
+    switch (target.id) {
+      case "btn-r":
+        playGame("rock");
+        break;
+
+      case "btn-p":
+        playGame("paper");
+        break;
+
+      case "btn-s":
+        playGame("scissor");
+        break;
+    }
+  });
+});
